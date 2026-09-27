@@ -3,11 +3,15 @@ const cors = require("cors");
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+    origin: "https://hinataa505.github.io"
+}));
+
 app.use(express.json());
 
 const PORT = process.env.PORT || 10000;
 const BRAWL_API_KEY = process.env.BRAWL_API_KEY;
+const MY_PLAYER_TAG = process.env.MY_PLAYER_TAG || "98RRL9GYQ";
 
 app.get("/", (req, res) => {
     res.json({
@@ -16,17 +20,15 @@ app.get("/", (req, res) => {
     });
 });
 
-app.get("/api/player/:tag", async (req, res) => {
+app.get("/api/me", async (req, res) => {
     try {
         if (!BRAWL_API_KEY) {
             return res.status(500).json({
-                error: "BRAWL_API_KEY Render'da ayarlanmamış."
+                error: "BRAWL_API_KEY ayarlanmamış."
             });
         }
 
-        let tag = decodeURIComponent(req.params.tag)
-            .trim()
-            .toUpperCase();
+        let tag = MY_PLAYER_TAG.trim().toUpperCase();
 
         if (!tag.startsWith("#")) {
             tag = "#" + tag;
